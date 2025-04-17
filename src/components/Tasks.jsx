@@ -41,10 +41,12 @@ const Tasks = (props) => {
             .catch((error) => console.error("Erreur :", error));
         }
       };
+
+
     return (
-        <div>
-            <div className="">Tasks</div>
-        <form className="flex gap-5" onSubmit={add_handler}>
+        <div > 
+            <div className="text-xl text-blue-800 font-bold ">Tasks</div>
+        <form className="flex gap-5 mt-3" onSubmit={add_handler}>
           <input
             type="text"
             placeholder="Enter a TASK"
@@ -65,7 +67,7 @@ const Tasks = (props) => {
           props.project.Tasks.map((task) => (
             <div
               key={task.id}
-              className="bg-gray-200 rounded-md p-2 flex justify-between"
+              className="bg-gray-200 rounded-md p-2 flex justify-between mt-2"
             >
               <div className="">{task.name}</div>
               <button className="" onClick={() => clear_handler(task.id)}>
