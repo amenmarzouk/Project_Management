@@ -5,13 +5,17 @@ import { projcontext } from "./proj";
 import { useEffect, useState } from "react";
 import { createContext } from "react";
 
+
 const ProjectProvider = ({ children }) => {
 
+  
     const [AllProjects, setAllProjects] = useState()
+
   const getallprojects = async () => {
     const db = ref(database, "projects");
+
     try {
-      const snapshot = await get(db);
+      const snapshot = await get(db)
       if (snapshot.exists()) {
         console.log("Données récupérées :", );
     
@@ -19,7 +23,7 @@ const ProjectProvider = ({ children }) => {
             id, 
             ...project, 
           }));
-setAllProjects(projects)
+    setAllProjects(projects)
       } else {
         setAllProjects([])
         console.log("Aucune donnée trouvée !");

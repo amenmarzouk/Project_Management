@@ -9,67 +9,56 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 
 
 const AddProject = () => {
-  const proj = useContext(projcontext);
-   const [visible, setVisible] = useState(false);
-  const valuesref = useRef({ Title: "", Description: "", Date: "", Tasks: [] });
-const [done, setdone] = useState(false)
+
+  const prjcont = useContext(projcontext);
+  
+
+
+
   const nav = useNavigate();
-const [message, setmessage] = useState("")
-  const add_handler = (event) => {
+
+  const valuesref = useRef({ Title: "", Description: "", Date: "" });
+
+
+ 
+
+  const add_handler = async (event) => {
     event.preventDefault();
-    const dbRef = ref(database, "projects");
+  try {
     const missingFields = [];
     if (!valuesref.current.Title) missingFields.push("Title");
     if (!valuesref.current.Description) missingFields.push("Description");
     if (!valuesref.current.Date) missingFields.push("Date");
-
     if (missingFields.length > 0) {
       const message =
         missingFields.length === 3
           ? "Project Details"
           : missingFields.join(", ");
-          setVisible(true)
-       toast.warn(`${message} required`, {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      }); 
-    } else {
-     
-      push(dbRef, valuesref.current)
-        .then(() => {
-          console.log("Données envoyées avec succès");
-          proj.getallprojects()
-          setdone(true)
-         
-          
-        })
-        .catch((error) => console.error("Erreur :", error));
+          toast.error(`${message} required`); 
+    }else{
+      const projectRef = ref(database, "projects");
+      const pushed =await push(projectRef, valuesref.current)
+           console.log("Données envoyées avec succès");
+           prjcont.getallprojects()
+           nav(`/${pushed.key}`);
     }
+  
+  } catch (error) {
+    console.error("Erreur :", error)
+  }
+   
   };
 
 
 
-useEffect(() => {
-
-  if(done){
-    const id=proj.AllProjects[proj.AllProjects.length-1].id
-  nav(`/${id}`);}
-},[proj.AllProjects])
 
   return (
     <div className="h-screen bg-gray-100 flex flex-row">
       <Sidebar />
       <ToastContainer
         position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
+        autoClose={1500}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick={false}
         rtl={false}
@@ -84,9 +73,10 @@ useEffect(() => {
           <div className="">Title</div>
           <input
             type="text"
-            placeholder="Enter Project Name"
+            placeholder="Enter Project Title"
             className="h-10 w-100 bg-gray-200 rounded-md pl-2"
             onChange={(e) => (valuesref.current.Title = e.target.value)}
+        
           />
         </div>
         <div className=" flex flex-col gap-2 ">
@@ -112,11 +102,13 @@ useEffect(() => {
 
           <button
             type="submit"
-            className="h-10 w-30 bg-red-500 rounded-md cursor-pointer"
+            className="h-10 w-30 bg-purple-500 rounded-md cursor-pointer"
+            data-dialog-target="dialog"
+
           >
             Save
           </button>
-       
+ 
         </div>
       </form>
     </div>
